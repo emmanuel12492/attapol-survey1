@@ -40,10 +40,17 @@ const Login = () => {
     setError('')
     setIsLoading(true)
     try {
+      // Pass email as username since the backend expects username
       await login(formData.email, formData.password)
       navigate('/surveys')
     } catch (err: any) {
-      setError(err.response?.data?.detail || 'Invalid email or password')
+      if (err.message) {
+        setError(err.message)
+      } else if (err.response?.data?.detail) {
+        setError(err.response.data.detail)
+      } else {
+        setError('An error occurred while trying to log in. Please try again.')
+      }
       console.error('Login error:', err)
     } finally {
       setIsLoading(false)

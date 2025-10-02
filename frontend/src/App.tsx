@@ -62,10 +62,21 @@ function App() {
   }, []);
 
   const login = async (email: string, password: string) => {
-    const response = await authService.login({ username: email, password });
-    const userData = await authService.getCurrentUser();
-    setUser(userData);
-    return response;
+    try {
+      const response = await authService.login({ username: email, password });
+      if (response.access_token) {
+        const userData = await authService.getCurrentUser();
+        setUser(userData);
+        return response;
+      } else {
+        throw new Error('Login failed - no access token received');
+      }
+    } catch (error: any) {
+      // Clear any existing auth state if login fails
+      localStorage.removeItem('token');
+      setUser(null);
+      throw error;
+    }
   };
 
   const logout = () => {

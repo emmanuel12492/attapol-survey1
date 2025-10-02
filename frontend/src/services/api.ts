@@ -46,12 +46,35 @@ api.interceptors.request.use((config) => {
 
 export const authService = {
   async login(credentials: LoginCredentials) {
-    const formData = new FormData();
-    formData.append('username', credentials.username);
-    formData.append('password', credentials.password);
-    const response = await api.post('/auth/login', formData);
-    localStorage.setItem('token', response.data.access_token);
-    return response.data;
+    try {
+      const formData = new FormData();
+      // Handle both email and username
+      formData.append('username', credentials.username);
+      formData.append('password', credentials.password);
+      
+      const response = await api.post('/auth/login', formData, {
+        headers: {
+          // Don't set Content-Type for FormData
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      
+      if (response.data.access_token) {
+        localStorage.setItem('token', response.data.access_token);
+        return response.data;
+      } else {
+        throw new Error('No access token received');
+      }
+    } catch (error: any) {
+      if (error.response?.status === 401) {
+        throw new Error('Invalid credentials');
+      } else if (error.response?.status === 422) {
+        throw new Error('Invalid input format');
+      } else if (!error.response) {
+        throw new Error('Network error - please check your connection');
+      }
+      throw error;
+    }
   },
 
   async register(data: RegisterData) {

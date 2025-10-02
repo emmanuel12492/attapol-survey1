@@ -5,6 +5,10 @@ export const instance = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
+  // Add timeout
+  timeout: 5000,
+  // Allow credentials (cookies, auth headers)
+  withCredentials: true,
 })
 
 // Add a request interceptor to include the auth token
