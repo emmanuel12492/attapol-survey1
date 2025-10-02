@@ -38,8 +38,9 @@ app.add_middleware(
 @app.get("/")
 async def health_check():
     try:
-        # Test database connection
-        await engine.connect()
+        async with engine.begin() as conn:
+            # Simple query to test connection
+            await conn.execute("SELECT 1")
         return {
             "status": "healthy",
             "message": "Survey API is running",
