@@ -1,4 +1,5 @@
 {
+  "name": "survey_frontend",
   "rewrites": [
     {
       "source": "/(.*)",

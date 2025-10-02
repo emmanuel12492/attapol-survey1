@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 export const instance = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || 'https://attapol-survey1-backend.vercel.app',
+  baseURL: import.meta.env.VITE_API_URL || 'https://survey-backend.vercel.app',
   headers: {
     'Content-Type': 'application/json',
   },
